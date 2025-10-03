@@ -214,7 +214,8 @@ class MapLibreBoroughMap {
             interactions: {
                 doubleClickZoom: !this.isMobile,
                 scrollZoom: false,              // Disabled entirely
-                touchZoomRotate: this.isMobile
+                touchZoomRotate: this.isMobile,
+                cooperativeGestures: this.isMobile // Mobile only
             }
         });
 
@@ -233,7 +234,8 @@ class MapLibreBoroughMap {
             dragRotate: false,
             keyboard: false,
             scrollZoom: false,               // Disabled to prevent page scroll conflicts on mobile
-            touchZoomRotate: this.isMobile   // Enable pinch zoom on mobile
+            touchZoomRotate: this.isMobile,  // Enable pinch zoom on mobile
+            cooperativeGestures: this.isMobile // Require two fingers on mobile to prevent scroll hijacking
         });
 
         // Enhanced debug: Log zoom changes with viewport context
@@ -1001,6 +1003,11 @@ class MapLibreBoroughMap {
         this.state.isZoomedIn = false;
         this.state.interactionsEnabled = true;
 
+        // Re-enable cooperative gestures on mobile when returning to full map view
+        if (this.isMobile) {
+            this.map.setCooperativeGestures(true);
+        }
+
         this.hideZoomControl();
 
         // Hide sidebar with animation
@@ -1539,13 +1546,17 @@ class MapLibreBoroughMap {
         this.logViewportDebugInfo('INTERACTION_UPDATE', {
             touchZoomRotate: this.isMobile,
             scrollZoom: false,              // Always disabled
-            doubleClickZoom: !this.isMobile
+            doubleClickZoom: !this.isMobile,
+            cooperativeGestures: this.isMobile // Mobile only
         });
 
         // Update map interactions based on screen size
         this.map.touchZoomRotate.enable(this.isMobile ? true : false);
         // Scroll zoom remains disabled to prevent page scroll conflicts
         this.map.doubleClickZoom.enable(this.isMobile ? false : true);
+        
+        // Enable cooperative gestures on mobile, disable on desktop
+        this.map.setCooperativeGestures(this.isMobile);
 
         // Reset any zoomed state when switching between mobile/desktop
         if (this.state.isZoomedIn) {
@@ -1576,6 +1587,12 @@ class MapLibreBoroughMap {
         this.map.fitBounds(bounds, options);
 
         this.state.isZoomedIn = true;
+        
+        // Disable cooperative gestures when zoomed in - user is focused on map interaction
+        if (this.isMobile) {
+            this.map.setCooperativeGestures(false);
+        }
+        
         this.showMobileSidebar();
     }
 
