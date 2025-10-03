@@ -213,7 +213,7 @@ class MapLibreBoroughMap {
             maxZoom: CONSTANTS.ZOOM.MAX,
             interactions: {
                 doubleClickZoom: !this.isMobile,
-                scrollZoom: !this.isMobile,
+                scrollZoom: false,              // Disabled entirely
                 touchZoomRotate: this.isMobile
             }
         });
@@ -228,12 +228,12 @@ class MapLibreBoroughMap {
             minZoom: CONSTANTS.ZOOM.MIN,
             maxZoom: CONSTANTS.ZOOM.MAX,
             boxZoom: false,
-            doubleClickZoom: !this.isMobile, // Enable on mobile
-            dragPan: true,                   // Enable on mobile
+            doubleClickZoom: !this.isMobile, // Disabled on mobile
+            dragPan: true,                   // Enable drag pan
             dragRotate: false,
             keyboard: false,
-            scrollZoom: !this.isMobile,      // Enable on mobile
-            touchZoomRotate: this.isMobile   // Enable on mobile
+            scrollZoom: false,               // Disabled to prevent page scroll conflicts on mobile
+            touchZoomRotate: this.isMobile   // Enable pinch zoom on mobile
         });
 
         // Enhanced debug: Log zoom changes with viewport context
@@ -1538,13 +1538,13 @@ class MapLibreBoroughMap {
     handleBreakpointChange() {
         this.logViewportDebugInfo('INTERACTION_UPDATE', {
             touchZoomRotate: this.isMobile,
-            scrollZoom: !this.isMobile,
+            scrollZoom: false,              // Always disabled
             doubleClickZoom: !this.isMobile
         });
 
         // Update map interactions based on screen size
         this.map.touchZoomRotate.enable(this.isMobile ? true : false);
-        this.map.scrollZoom.enable(this.isMobile ? false : true);
+        // Scroll zoom remains disabled to prevent page scroll conflicts
         this.map.doubleClickZoom.enable(this.isMobile ? false : true);
 
         // Reset any zoomed state when switching between mobile/desktop
