@@ -140,7 +140,6 @@ class UKPostcodeValidator {
     clearTimeout(this.debounceTimer);
     
     if (query.length < this.options.minChars) {
-      this.hideDropdown(input);
       this.hideError(input);
       return;
     }
@@ -148,49 +147,16 @@ class UKPostcodeValidator {
     this.debounceTimer = setTimeout(() => {
       const matches = this.searchPostcodes(query);
       if (matches.length > 0) {
-        this.showDropdown(input, matches);
         this.hideError(input);
       } else {
-        this.hideDropdown(input);
         this.showError(input);
       }
     }, this.options.debounceTime);
   }
   
   handleKeydown(e) {
-    const input = e.target;
-    const dropdown = input.ukPostcodeDropdown;
-    
-    if (!dropdown || dropdown.style.display === 'none') return;
-    
-    const items = dropdown.querySelectorAll('.uk-postcode-item');
-    const currentActive = dropdown.querySelector('.uk-postcode-item.active');
-    let activeIndex = currentActive ? Array.from(items).indexOf(currentActive) : -1;
-    
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        activeIndex = Math.min(activeIndex + 1, items.length - 1);
-        this.setActiveItem(items, activeIndex);
-        break;
-        
-      case 'ArrowUp':
-        e.preventDefault();
-        activeIndex = Math.max(activeIndex - 1, -1);
-        this.setActiveItem(items, activeIndex);
-        break;
-        
-      case 'Enter':
-        e.preventDefault();
-        if (currentActive) {
-          this.selectPostcode(input, currentActive.textContent);
-        }
-        break;
-        
-      case 'Escape':
-        this.hideDropdown(input);
-        break;
-    }
+    // Dropdown functionality disabled - no keyboard navigation
+    return;
   }
   
   handleBlur(e) {
@@ -203,15 +169,8 @@ class UKPostcodeValidator {
   }
   
   setActiveItem(items, activeIndex) {
-    items.forEach((item, index) => {
-      if (index === activeIndex) {
-        item.classList.add('active');
-        item.style.backgroundColor = '#f5f8fa';
-      } else {
-        item.classList.remove('active');
-        item.style.backgroundColor = '';
-      }
-    });
+    // Dropdown functionality disabled
+    return;
   }
   
   searchPostcodes(query) {
@@ -234,35 +193,8 @@ class UKPostcodeValidator {
   }
   
   showDropdown(input, matches) {
-    const dropdown = input.ukPostcodeDropdown;
-    dropdown.innerHTML = '';
-    dropdown.style.display = 'block';
-    
-    matches.forEach(postcode => {
-      const item = document.createElement('div');
-      item.className = 'uk-postcode-item';
-      item.textContent = this.formatPostcode(postcode);
-      item.style.cssText = `
-        padding: 8px 12px;
-        cursor: pointer;
-        border-bottom: 1px solid #f5f8fa;
-      `;
-      
-      item.addEventListener('mouseenter', () => {
-        this.setActiveItem([item], 0);
-      });
-      
-      item.addEventListener('mouseleave', () => {
-        item.classList.remove('active');
-        item.style.backgroundColor = '';
-      });
-      
-      item.addEventListener('click', () => {
-        this.selectPostcode(input, item.textContent);
-      });
-      
-      dropdown.appendChild(item);
-    });
+    // Dropdown functionality disabled
+    return;
   }
   
   hideDropdown(input) {
@@ -272,13 +204,8 @@ class UKPostcodeValidator {
   }
   
   selectPostcode(input, postcode) {
-    input.value = postcode;
-    this.hideDropdown(input);
-    this.hideError(input);
-    input.dataset.ukPostcodeValid = 'true';
-    
-    const event = new Event('change', { bubbles: true });
-    input.dispatchEvent(event);
+    // Dropdown functionality disabled - this method is no longer used
+    return;
   }
   
   validateCurrentInput(input) {
