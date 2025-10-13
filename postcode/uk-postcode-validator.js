@@ -144,13 +144,9 @@ class UKPostcodeValidator {
       return;
     }
     
+    // Validate the input after debounce delay
     this.debounceTimer = setTimeout(() => {
-      const matches = this.searchPostcodes(query);
-      if (matches.length > 0) {
-        this.hideError(input);
-      } else {
-        this.showError(input);
-      }
+      this.validateCurrentInput(input);
     }, this.options.debounceTime);
   }
   
